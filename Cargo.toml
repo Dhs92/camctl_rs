@@ -6,6 +6,7 @@ edition = "2018"
 description = "A Rust rewrite of https://github.com/leaty/camctl"
 keywords = ["kraken", "nzxt", "aio", "cooler", "linux"]
 license = "GNU GPLv3"
+repository = "https://github.com/Dhs92/camctl_rs/tree/master"
 
 [badges]
 maintenance = { status = "passively-maintained" }
