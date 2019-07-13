@@ -7,3 +7,8 @@ A Rust rewrite of https://github.com/leaty/camctl
 
 # Usage
 WIP
+
+# TODO
+- Timeout configurable
+- More logging
+- Use self.interface instead of magic value
