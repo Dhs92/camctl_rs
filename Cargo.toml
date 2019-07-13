@@ -5,7 +5,7 @@ authors = ["Dhs92 <forehand.alex@gmail.com>"]
 edition = "2018"
 description = "A Rust rewrite of https://github.com/leaty/camctl"
 keywords = ["kraken", "nzxt", "aio", "cooler", "linux"]
-license = "GNU GPLv3"
+license = "GPLv3"
 repository = "https://github.com/Dhs92/camctl_rs/tree/master"
 readme = "README.md"
 
