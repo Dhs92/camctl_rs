@@ -1,0 +1,17 @@
+[package]
+name = "camctl_rs"
+version = "0.1.0"
+authors = ["Dhs92 <forehand.alex@gmail.com>"]
+edition = "2018"
+description = "A Rust rewrite of https://github.com/leaty/camctl"
+keywords = ["kraken", "nzxt", "aio", "cooler", "linux"]
+license = "GNU GPLv3"
+
+[badges]
+maintenance = { status = "passively-maintained" }
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.5"
+usb-device = "0.2.0"
+libusb = "0.3"
