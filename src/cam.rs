@@ -14,10 +14,10 @@ pub struct Kraken<'a> {
 /// # Example
 ///
 /// ```
-/// use crate::camctl::Kraken;
+/// use camctl_rs::Kraken;
 ///
 /// let ctx = libusb::Context::new()?;
-/// let kraken = Kraken::from(ctx)?;
+/// let kraken = Kraken::from(&ctx)?;
 ///
 /// kraken.set_fan(75); // sets the fan speed to 75%
 /// ```

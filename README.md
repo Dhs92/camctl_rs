@@ -7,10 +7,10 @@ A Rust rewrite of https://github.com/leaty/camctl
 
 # Usage
 ```rust
-    use crate::camctl::Kraken;
+    use camctl_rs::Kraken;
 
     let ctx = libusb::Context::new()?;
-    let kraken = Kraken::from(ctx)?;
+    let kraken = Kraken::from(&ctx)?;
 
     kraken.set_fan(75); // sets the fan speed to 75%
 ```
@@ -18,5 +18,4 @@ A Rust rewrite of https://github.com/leaty/camctl
 # TODO
 - Timeout configurable
 - More logging
-- Use self.interface instead of magic value
 
