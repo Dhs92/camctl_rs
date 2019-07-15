@@ -7,17 +7,42 @@ const VID: u16 = 0x1e71;
 const PID: u16 = 0x170e;
 
 pub struct Kraken<'a> {
-    device: libusb::Device<'a>,
-    iface: u8,
+    pub(crate) device: libusb::Device<'a>,
+    pub(crate) iface: u8,
 }
 
+#[derive(Debug)]
+pub struct Info {
+    pub liquid_temp: f32,
+    pub fan_speed: u16,
+    pub pump_speed: u16,
+}
+
+impl Info {
+    pub fn from(kraken: &Kraken) -> libusb::Result<Self> {
+        let mut device_handle: libusb::DeviceHandle = kraken.device.open()?;
+        let buf: &mut [u8; 17] = &mut [1; 17];
+        let _ = device_handle.claim_interface(kraken.iface);
+        let bytes = device_handle.read_bulk(0x81, buf, Duration::new(10, 0)).unwrap();
+
+        println!("Bytes: {}, Buf: {:?}", bytes, buf);
+
+        let result = Self {
+            liquid_temp: (buf[1] as f32 + buf[2] as f32 / 10f32) as f32,
+            fan_speed: (buf[3] as u16) << 8 | buf[4] as u16,
+            pump_speed: (buf[5] as u16) << 8 | buf[6] as u16,
+        };
+
+        Ok(result)
+    }
+}
 /// # Example
 ///
 /// ```
-/// use camctl_rs::Kraken;
+/// use camctl_rs::cam::Kraken;
 ///
-/// let ctx = libusb::Context::new()?;
-/// let kraken = Kraken::from(&ctx)?;
+/// let ctx = libusb::Context::new().unwrap();
+/// let kraken = Kraken::from(&ctx).unwrap();
 ///
 /// kraken.set_fan(75); // sets the fan speed to 75%
 /// ```
@@ -173,4 +198,21 @@ impl<'a> Kraken<'a> {
 
         Ok(())
     }
+
+    pub fn status(&self) -> libusb::Result<Info> {
+        Info::from(&self)
+    }
+}
+
+#[test]
+fn main() -> libusb::Result<()> {
+    let ctx = libusb::Context::new().unwrap();
+    let kraken = Kraken::from(&ctx).unwrap();
+    let kraken_info = kraken.status()?;
+
+    println!("Liquid Temp: {}C", kraken_info.liquid_temp);
+    println!("Fan Speed: {} RPM", kraken_info.fan_speed);
+    println!("Pump Speed: {} RPM", kraken_info.pump_speed);
+
+    Ok(())
 }
