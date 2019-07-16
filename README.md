@@ -7,10 +7,10 @@ A Rust rewrite of https://github.com/leaty/camctl
 
 # Usage
 ```rust
-    use camctl_rs::Kraken;
+    use camctl_rs::cam::Kraken;
 
-    let ctx = libusb::Context::new()?;
-    let kraken = Kraken::from(&ctx)?;
+    let ctx = libusb::Context::new().unwrap();
+    let kraken = Kraken::from(&ctx).unwrap();
 
     kraken.set_fan(75); // sets the fan speed to 75%
 ```
