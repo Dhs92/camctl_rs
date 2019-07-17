@@ -1,6 +1,3 @@
-extern crate libusb;
-extern crate log;
-
 use std::time::Duration;
 
 const VID: u16 = 0x1e71;
@@ -202,17 +199,4 @@ impl<'a> Kraken<'a> {
     pub fn status(&self) -> libusb::Result<Info> {
         Info::from(&self)
     }
-}
-
-#[test]
-fn main() -> libusb::Result<()> {
-    let ctx = libusb::Context::new().unwrap();
-    let kraken = Kraken::from(&ctx).unwrap();
-    let kraken_info = kraken.status()?;
-
-    println!("Liquid Temp: {}C", kraken_info.liquid_temp);
-    println!("Fan Speed: {} RPM", kraken_info.fan_speed);
-    println!("Pump Speed: {} RPM", kraken_info.pump_speed);
-
-    Ok(())
 }

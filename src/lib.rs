@@ -1,1 +1,2 @@
-pub mod cam;
+mod cam;
+pub use cam::*;
