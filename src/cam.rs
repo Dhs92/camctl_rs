@@ -34,16 +34,7 @@ impl Info {
         Ok(result)
     }
 }
-/// # Example
-///
-/// ```
-/// use camctl_rs::cam::Kraken;
-///
-/// let ctx = libusb::Context::new().unwrap();
-/// let kraken = Kraken::from(&ctx).unwrap();
-///
-/// kraken.set_fan(75); // sets the fan speed to 75%
-/// ```
+
 impl<'a> Kraken<'a> {
     /// Constructs a new `Kraken` from [libusb::Context](https://docs.rs/libusb/0.3.0/libusb/struct.Context.html)
     pub fn from(ctx: &'a libusb::Context) -> libusb::Result<Self> {
@@ -72,9 +63,9 @@ impl<'a> Kraken<'a> {
     /// Set the fan speed by percent, `speed` should be 0-100
     ///
     /// If the speed is over 100, the method will return without side-effects
-    pub fn set_fan(&self, speed: u8) -> libusb::Result<()> {
+    pub fn set_fan(&self, speed: u16) -> libusb::Result<()> {
         match speed {
-            0..=100 => {
+            10..=100 => {
                 let mut interface = self.device.open()?;
 
                 if interface.kernel_driver_active(self.iface)? {
@@ -85,7 +76,7 @@ impl<'a> Kraken<'a> {
 
                 // magic payload, https://github.com/leaty/camctl/blob/master/camctl#L31
                 let payload: [u8; 24] = [
-                    2, 77, 0, 0, speed, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    2, 77, 0, 0, speed as u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 ];
 
                 // write the payload, 10 second timeout
@@ -136,9 +127,9 @@ impl<'a> Kraken<'a> {
     /// Set the pump speed by percent, `speed` should be 0-100
     ///
     /// If the speed is over 100, the method will return without side-effects
-    pub fn set_pump(&self, speed: u8) -> libusb::Result<()> {
+    pub fn set_pump(&self, speed: u16) -> libusb::Result<()> {
         match speed {
-            0..=100 => {
+            60..=100 => {
                 let mut interface = self.device.open()?;
 
                 if interface.kernel_driver_active(self.iface)? {
@@ -149,7 +140,7 @@ impl<'a> Kraken<'a> {
 
                 // magic payload, https://github.com/leaty/camctl/blob/master/camctl#L31
                 let payload: [u8; 24] = [
-                    2, 77, 64, 0, speed, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    2, 77, 64, 0, speed as u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 ];
 
                 match interface.write_bulk(1, &payload, Duration::new(10, 0)) {
