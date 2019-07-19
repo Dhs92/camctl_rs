@@ -7,7 +7,7 @@ A Rust rewrite of https://github.com/leaty/camctl
 
 # Usage
 ```rust
-    use camctl_rs::cam::Kraken;
+    use camctl_rs::Kraken;
 
     let ctx = libusb::Context::new().unwrap();
     let kraken = Kraken::from(&ctx).unwrap();
