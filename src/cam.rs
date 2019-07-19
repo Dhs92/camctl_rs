@@ -18,11 +18,12 @@ pub struct Info {
 impl Info {
     pub fn from(kraken: &Kraken) -> libusb::Result<Self> {
         let mut device_handle: libusb::DeviceHandle = kraken.device.open()?;
-        let buf: &mut [u8; 17] = &mut [1; 17];
+        let buf: &mut [u8; 17] = &mut [0; 17];
         let _ = device_handle.claim_interface(kraken.iface);
-        let bytes = device_handle.read_bulk(0x81, buf, Duration::new(10, 0)).unwrap();
-
-        println!("Bytes: {}, Buf: {:?}", bytes, buf);
+        let _bytes = match device_handle.read_bulk(0x81, buf, Duration::new(10, 0)) {
+            Ok(u) => log::info!("Status buffer size: {} bytes", u),
+            Err(e) => log::warn!("Could not read from endpoint: {}", e),
+        };
 
         let result = Self {
             liquid_temp: (buf[1] as f32 + buf[2] as f32 / 10f32) as f32,
