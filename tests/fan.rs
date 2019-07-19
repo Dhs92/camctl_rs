@@ -1,7 +1,7 @@
 use flexi_logger::{opt_format, Logger};
 
 #[test]
-fn status() -> libusb::Result<()> {
+fn fan() -> libusb::Result<()> {
     Logger::with_env_or_str("debug")
         .log_to_file()
         .directory("LOGS")
@@ -11,11 +11,10 @@ fn status() -> libusb::Result<()> {
 
     let ctx = libusb::Context::new().unwrap();
     let kraken = camctl_rs::Kraken::from(&ctx).unwrap();
-    let kraken_info = kraken.status()?;
 
-    println!("Liquid Temp: {}C", kraken_info.liquid_temp);
-    println!("Fan Speed: {} RPM", kraken_info.fan_speed);
-    println!("Pump Speed: {} RPM", kraken_info.pump_speed);
+    for i in 60..=100 {
+        kraken.set_fan(i)?
+    }
 
     Ok(())
 }
