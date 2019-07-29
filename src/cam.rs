@@ -3,6 +3,7 @@ use std::time::Duration;
 const VID: u16 = 0x1e71;
 const PID: u16 = 0x170e;
 
+#[derive(Debug)]
 pub struct Kraken<'a> {
     pub(crate) device: libusb::Device<'a>,
     pub(crate) iface: u8,
@@ -15,7 +16,7 @@ pub struct Info {
     pub pump_speed: u16,
 }
 
-impl Info {
+impl From<Kraken> for Info {
     pub fn from(kraken: &Kraken) -> libusb::Result<Self> {
         let mut device_handle: libusb::DeviceHandle = kraken.device.open()?;
         let buf: &mut [u8; 17] = &mut [0; 17];
@@ -35,15 +36,17 @@ impl Info {
     }
 }
 
-impl<'a> Kraken<'a> {
-    /// Constructs a new `Kraken` from [libusb::Context](https://docs.rs/libusb/0.3.0/libusb/struct.Context.html)
-    pub fn from(ctx: &'a libusb::Context) -> libusb::Result<Self> {
-        let device = Kraken {
-            iface: 0, // magic number
-            device: Kraken::get_device(ctx, PID, VID)?,
-        };
-        Ok(device)
+impl TryFrom<libusb::Context> for Kraken<'a> {
+    pub fn try_from(ctx: &'a libusb::Context) -> libusb::Result<Self> {
+        let device = Kraken::get_device(ctx, PID, VID)?;
+        
+        Ok(Self { iface: 0, device})
     }
+}
+
+impl<'a> Kraken<'a> {
+    // Constructs a new `Kraken` from [libusb::Context](https://docs.rs/libusb/0.3.0/libusb/struct.Context.html)
+
 
     fn get_device(ctx: &'a libusb::Context, pid: u16, vid: u16) -> libusb::Result<libusb::Device> {
         //iterate through DeviceList provided by Context
