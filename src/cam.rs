@@ -39,14 +39,13 @@ impl From<Kraken> for Info {
 impl TryFrom<libusb::Context> for Kraken<'a> {
     pub fn try_from(ctx: &'a libusb::Context) -> libusb::Result<Self> {
         let device = Kraken::get_device(ctx, PID, VID)?;
-        
-        Ok(Self { iface: 0, device})
+
+        Ok(Self { iface: 0, device })
     }
 }
 
 impl<'a> Kraken<'a> {
     // Constructs a new `Kraken` from [libusb::Context](https://docs.rs/libusb/0.3.0/libusb/struct.Context.html)
-
 
     fn get_device(ctx: &'a libusb::Context, pid: u16, vid: u16) -> libusb::Result<libusb::Device> {
         //iterate through DeviceList provided by Context
@@ -78,9 +77,8 @@ impl<'a> Kraken<'a> {
                 interface.claim_interface(self.iface)?;
 
                 // magic payload, https://github.com/leaty/camctl/blob/master/camctl#L31
-                let payload: [u8; 24] = [
-                    2, 77, 0, 0, speed as u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                ];
+                #[rustfmt::skip]
+                let payload: [u8; 24] = [ 2, 77, 0, 0, speed as u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
 
                 // write the payload, 10 second timeout
                 match interface.write_bulk(1, &payload, Duration::new(10, 0)) {
@@ -142,9 +140,8 @@ impl<'a> Kraken<'a> {
                 interface.claim_interface(self.iface)?;
 
                 // magic payload, https://github.com/leaty/camctl/blob/master/camctl#L31
-                let payload: [u8; 24] = [
-                    2, 77, 64, 0, speed as u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                ];
+                #[rustfmt::skip]
+                let payload: [u8; 24] = [ 2, 77, 64, 0, speed as u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
 
                 match interface.write_bulk(1, &payload, Duration::new(10, 0)) {
                     Err(libusb::Error::Io) => {
